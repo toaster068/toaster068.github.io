@@ -1,6 +1,2250 @@
 <!DOCTYPE html>
-     <html>
-     <body>
-     <h1>Site is live</h1>
-     </body>
-     </html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASA Cheese Puffs</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background-color: #111;
+  font-family: 'Press Start 2P', cursive;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: none;
+}
+.game-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #000;
+}
+.game-container {
+  position: relative;
+  background: #0f0f0f;
+  background: radial-gradient(circle at center, #111 0%, #000 100%);
+  border: 3px solid #0f0;
+  box-shadow: 0 0 50px #0f0, 0 0 100px #0f0 inset;
+  transition: all 0.5s ease;
+  overflow: hidden;
+  width: 1200px;
+  height: 800px;
+}
+.game-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    repeating-linear-gradient(0deg, rgba(0,255,0,0.05) 0 1px, transparent 1px 20px),
+    repeating-linear-gradient(90deg, rgba(0,255,0,0.05) 0 1px, transparent 1px 20px);
+  pointer-events: none;
+  z-index: 1;
+}
+.game-container::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 50% 50%, rgba(0,255,0,0.05), transparent 70%);
+  animation: neonGlow 6s linear infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+@keyframes neonGlow {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.05); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+.cheese-puff {
+  position: absolute;
+  background-image: url('https://imgs.search.brave.com/wY49KoSFbCEhAdd773X2PoIm6Al9R0bcmNVM03ND27Q/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jbGlwYXJ0LWxpYnJhcnkuY29tL2ltZzEvMzczMzgucG5n');
+  background-size: cover;
+  background-repeat: no-repeat;
+  cursor: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  z-index: 10;
+  border: 2px solid #0f0;
+  box-shadow: 0 0 20px #0f0, 0 0 40px #0f0 inset;
+  border-radius: 15%;
+  transition: transform 0.2s;
+}
+.cheese-puff:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 30px #0f0, 0 0 60px #0f0 inset;
+}
+.character {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  pointer-events: none;
+  border: 2px solid #0f0;
+  border-radius: 50%;
+  box-shadow: 0 0 15px #0f0, 0 0 30px #0f0 inset;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  z-index: 1000;
+  transform: translate(-50%, -50%);
+  display: none;
+}
+#character-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  pointer-events: none;
+}
+.score, .timer, .highscore {
+  position: absolute;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 8px 12px;
+  border-radius: 6px;
+  box-shadow: 0 0 12px #0f0, 0 0 25px #0f0 inset;
+  color: #0f0;
+  text-shadow: 0 0 8px #0f0, 0 0 16px #0f0;
+  z-index: 5;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid #0f0;
+  display: none;
+}
+.score {
+  top: 15px;
+  right: 15px;
+  max-width: 160px;
+  word-wrap: break-word;
+  font-size: 22px;
+  padding: 8px 12px;
+}
+.timer {
+  top: 65px;
+  left: 15px;
+  max-width: 130px;
+  font-size: 22px;
+  padding: 8px 12px;
+  pointer-events: auto;
+  cursor: pointer;
+}
+.highscore {
+  top: 85px;
+  right: 15px;
+  font-size: 16px;
+  max-width: 200px;
+  word-wrap: break-word;
+  padding: 6px 10px;
+}
+@keyframes scoreAnimation {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+.game-over {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #0f0;
+  font-size: 36px;
+  display: none;
+  text-shadow: 0 0 20px #0f0, 0 0 40px #0f0;
+  z-index: 10;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background: rgba(0, 0, 0, 0.9);
+  padding: 30px;
+  border-radius: 15px;
+  border: 3px solid #0f0;
+  box-shadow: 0 0 30px #0f0;
+  max-width: 90%;
+  max-height: 90%;
+  overflow: auto;
+}
+.game-over button {
+  margin-top: 20px;
+  padding: 12px 25px;
+  font-size: 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background: #000;
+  color: #0f0;
+  text-shadow: 0 0 5px #0f0;
+  box-shadow: 0 0 10px #0f0, 0 0 20px #0f0 inset;
+  font-family: 'Press Start 2P', cursive;
+}
+.particle {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background: #0f0;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: particleMove 0.5s linear forwards;
+  z-index: 20;
+  box-shadow: 0 0 8px #0f0;
+  transform: translate(-50%, -50%);
+}
+@keyframes particleMove {
+  to { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0); opacity: 0; }
+}
+.menu, .pause-screen, .settings-screen, .tutorial-screen, .customize-screen, .game-settings-screen, .puff-customize-screen {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #0f0;
+  font-size: 36px;
+  text-shadow: 0 0 20px #0f0, 0 0 40px #0f0;
+  z-index: 15;
+  background: rgba(0, 0, 0, 0.9);
+  padding: 30px;
+  border-radius: 20px;
+  border: 3px solid #0f0;
+  box-shadow: 0 0 30px #0f0, 0 0 60px #0f0 inset;
+  max-width: 95vw;
+  max-height: 95vh;
+  overflow: auto;
+  cursor: default;
+  width: auto;
+  height: auto;
+}
+.menu-content {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+  max-width: 1200px;
+}
+.menu-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.menu-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.character-house {
+  width: 200px;
+  height: 200px;
+  border: 3px solid #0f0;
+  border-radius: 20px;
+  background: rgba(0, 255, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  box-shadow: 0 0 20px #0f0 inset;
+  position: relative;
+  overflow: hidden;
+}
+.house-character {
+  width: 80px;
+  height: 80px;
+  border: 2px solid #0f0;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 15px #0f0;
+}
+.score-history {
+  width: 100%;
+  max-height: 400px;
+  overflow-y: auto;
+  border: 2px solid #0f0;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 15px;
+}
+.score-history h3 {
+  color: #0f0;
+  font-size: 16px;
+  margin-bottom: 15px;
+  text-shadow: 0 0 5px #0f0;
+}
+.score-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  margin: 6px 0;
+  background: rgba(0, 255, 0, 0.1);
+  border: 1px solid #0f0;
+  border-radius: 5px;
+  font-size: 12px;
+  color: #0f0;
+  transition: all 0.2s ease;
+}
+.score-item:hover {
+  background: rgba(0, 255, 0, 0.2);
+  transform: scale(1.02);
+}
+.score-value {
+  font-weight: bold;
+  color: #ff0;
+  text-shadow: 0 0 5px #ff0;
+}
+.score-date {
+  font-size: 10px;
+  opacity: 0.8;
+}
+.no-scores {
+  text-align: center;
+  color: #0f0;
+  font-size: 12px;
+  opacity: 0.7;
+  padding: 20px;
+}
+.menu h1, .pause-screen h1, .settings-screen h1, .tutorial-screen h1, .customize-screen h1, .game-settings-screen h1, .puff-customize-screen h1 {
+  font-size: 32px;
+  margin-bottom: 25px;
+  word-wrap: break-word;
+}
+.menu button, .pause-screen button, .settings-screen button, .tutorial-screen button, .customize-screen button, .game-settings-screen button, .puff-customize-screen button {
+  margin: 12px;
+  padding: 12px 25px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #000;
+  color: #0f0;
+  text-shadow: 0 0 5px #0f0;
+  box-shadow: 0 0 10px #0f0, 0 0 20px #0f0 inset;
+  font-family: 'Press Start 2P', cursive;
+  word-wrap: break-word;
+  white-space: normal;
+  cursor: pointer;
+}
+.menu button:hover, .pause-screen button:hover, .settings-screen button:hover, .tutorial-screen button:hover, .customize-screen button:hover, .game-settings-screen button:hover, .puff-customize-screen button:hover {
+  background: #0f0;
+  color: #000;
+  text-shadow: none;
+}
+.controls-info {
+  font-size: 12px;
+  margin-top: 20px;
+  color: #0f0;
+  text-shadow: 0 0 5px #0f0;
+  line-height: 1.5;
+}
+.pause-screen, .settings-screen, .tutorial-screen, .customize-screen, .game-settings-screen, .puff-customize-screen {
+  display: none;
+  font-size: 28px;
+}
+.settings-screen h1, .tutorial-screen h1, .customize-screen h1, .game-settings-screen h1, .puff-customize-screen h1 {
+  font-size: 28px;
+  margin-bottom: 25px;
+}
+.setting-item {
+  margin: 15px 0;
+  font-size: 14px;
+}
+.sensitivity-slider, .game-setting-slider {
+  width: 280px;
+  max-width: 100%;
+  margin: 10px 0;
+  -webkit-appearance: none;
+  height: 8px;
+  background: #000;
+  border: 2px solid #0f0;
+  border-radius: 5px;
+  outline: none;
+  cursor: pointer;
+}
+.sensitivity-slider::-webkit-slider-thumb, .game-setting-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  background: #0f0;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 10px #0f0;
+}
+.sensitivity-value, .game-setting-value {
+  font-size: 12px;
+  margin-top: 5px;
+  color: #0f0;
+  word-wrap: break-word;
+}
+.new-highscore {
+  color: #ff0;
+  text-shadow: 0 0 10px #ff0;
+  animation: pulse 0.5s infinite alternate;
+}
+@keyframes pulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.1); }
+}
+.tutorial-content {
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: left;
+  max-width: 500px;
+  margin: 0 auto;
+}
+.tutorial-step {
+  margin: 20px 0;
+  padding: 12px;
+  border: 1px solid #0f0;
+  border-radius: 8px;
+  background: rgba(0, 255, 0, 0.1);
+}
+.tutorial-key {
+  display: inline-block;
+  padding: 4px 8px;
+  background: #000;
+  border: 2px solid #0f0;
+  border-radius: 4px;
+  margin: 0 4px;
+  font-size: 12px;
+}
+.tutorial-highlight {
+  color: #ff0;
+  text-shadow: 0 0 5px #ff0;
+}
+.unlock-notification {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.95);
+  padding: 25px;
+  border: 3px solid #ff0;
+  border-radius: 15px;
+  text-align: center;
+  color: #ff0;
+  font-size: 20px;
+  z-index: 25;
+  display: none;
+  box-shadow: 0 0 30px #ff0;
+  max-width: 90vw;
+  word-wrap: break-word;
+  cursor: default;
+}
+.unlock-notification h3 {
+  color: #ff0;
+  margin-bottom: 15px;
+  font-size: 24px;
+}
+.customize-option {
+  margin: 15px 0;
+}
+.customize-option input {
+  padding: 8px;
+  font-size: 14px;
+  background: #000;
+  color: #0f0;
+  border: 2px solid #0f0;
+  border-radius: 5px;
+  width: 280px;
+  max-width: 100%;
+  font-family: 'Press Start 2P', cursive;
+  cursor: text;
+}
+.customize-option button {
+  margin-left: 8px;
+  margin-top: 5px;
+}
+.preview-image {
+  width: 80px;
+  height: 80px;
+  border: 2px solid #0f0;
+  border-radius: 50%;
+  margin: 12px auto;
+  object-fit: cover;
+  display: none;
+}
+.feature-locked {
+  opacity: 0.5;
+  position: relative;
+}
+.locked-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+}
+.locked-text {
+  color: #f00;
+  font-size: 10px;
+  text-align: center;
+  text-shadow: 0 0 5px #f00;
+}
+.game-settings-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 15px;
+  margin: 15px 0;
+}
+.game-setting-item {
+  text-align: center;
+  padding: 12px;
+  border: 1px solid #0f0;
+  border-radius: 8px;
+  background: rgba(0, 255, 0, 0.1);
+}
+.preset-buttons {
+  margin: 15px 0;
+}
+.preset-button {
+  margin: 4px;
+  padding: 8px 12px;
+  font-size: 10px;
+}
+.map-size-preview {
+  width: 180px;
+  height: 100px;
+  margin: 8px auto;
+  border: 2px solid #0f0;
+  background: rgba(0, 255, 0, 0.1);
+  position: relative;
+}
+.preview-box {
+  position: absolute;
+  background: #0f0;
+  opacity: 0.7;
+  transition: all 0.3s ease;
+}
+.back-to-menu {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  padding: 8px 15px;
+  font-size: 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #000;
+  color: #0f0;
+  text-shadow: 0 0 5px #0f0;
+  box-shadow: 0 0 10px #0f0, 0 0 20px #0f0 inset;
+  font-family: 'Press Start 2P', cursive;
+  z-index: 20;
+  border: 2px solid #0f0;
+  cursor: pointer;
+}
+.back-to-menu:hover {
+  background: #0f0;
+  color: #000;
+  text-shadow: none;
+}
+.settings-disabled-message {
+  font-size: 12px;
+  color: #f00;
+  margin-top: 10px;
+  text-shadow: 0 0 5px #f00;
+}
+.keybind-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 15px 0;
+  padding: 10px;
+  border: 1px solid #0f0;
+  border-radius: 8px;
+  background: rgba(0, 255, 0, 0.1);
+}
+.keybind-label {
+  font-size: 12px;
+  color: #0f0;
+}
+.keybind-button {
+  padding: 8px 12px;
+  font-size: 10px;
+  background: #000;
+  color: #0f0;
+  border: 2px solid #0f0;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: 'Press Start 2P', cursive;
+  min-width: 80px;
+  text-align: center;
+}
+.keybind-button:hover {
+  background: #0f0;
+  color: #000;
+}
+.keybind-button.waiting {
+  background: #ff0;
+  color: #000;
+  animation: pulse 0.5s infinite alternate;
+}
+.sound-option {
+  margin: 15px 0;
+  padding: 10px;
+  border: 1px solid #0f0;
+  border-radius: 8px;
+  background: rgba(0, 255, 0, 0.1);
+}
+.sound-option h3 {
+  font-size: 14px;
+  margin-bottom: 10px;
+  color: #0f0;
+}
+.sound-preview {
+  width: 100%;
+  margin: 10px 0;
+  padding: 8px;
+  background: #000;
+  color: #0f0;
+  border: 2px solid #0f0;
+  border-radius: 5px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  cursor: pointer;
+}
+.sound-preview:hover {
+  background: #0f0;
+  color: #000;
+}
+.scaled-ui {
+  position: absolute;
+  z-index: 5;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid #0f0;
+  box-shadow: 0 0 12px #0f0, 0 0 25px #0f0 inset;
+  color: #0f0;
+  text-shadow: 0 0 8px #0f0, 0 0 16px #0f0;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-weight: bold;
+  display: none;
+}
+.puff-preview {
+  width: 100px;
+  height: 100px;
+  border: 2px solid #0f0;
+  border-radius: 15%;
+  margin: 12px auto;
+  object-fit: cover;
+  display: none;
+  background-size: cover;
+  background-position: center;
+}
+.music-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid #0f0;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px #0f0, 0 0 20px #0f0 inset;
+  transition: all 0.3s ease;
+}
+.music-toggle:hover {
+  background: rgba(0, 255, 0, 0.2);
+  transform: scale(1.1);
+}
+.music-toggle.muted {
+  background: rgba(255, 0, 0, 0.3);
+  border-color: #f00;
+  box-shadow: 0 0 10px #f00, 0 0 20px #f00 inset;
+}
+.music-icon {
+  width: 24px;
+  height: 24px;
+  filter: invert(48%) sepia(79%) saturate(2476%) hue-rotate(86deg) brightness(118%) contrast(119%);
+}
+.music-toggle.muted .music-icon {
+  filter: invert(16%) sepia(99%) saturate(7404%) hue-rotate(358deg) brightness(95%) contrast(118%);
+}
+@media (max-width: 768px) {
+  .game-container {
+    width: 95vw;
+    height: 95vh;
+    max-width: 1200px;
+    max-height: 800px;
+  }
+  .menu-content {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .menu, .pause-screen, .settings-screen, .tutorial-screen, .customize-screen, .game-settings-screen, .puff-customize-screen {
+    font-size: 24px;
+    padding: 20px;
+  }
+  .menu h1, .pause-screen h1, .settings-screen h1, .tutorial-screen h1, .customize-screen h1, .game-settings-screen h1, .puff-customize-screen h1 {
+    font-size: 24px;
+  }
+  .menu button, .pause-screen button, .settings-screen button, .tutorial-screen button, .customize-screen button, .game-settings-screen button, .puff-customize-screen button {
+    font-size: 12px;
+    padding: 10px 15px;
+    margin: 8px;
+  }
+  .score, .timer, .highscore {
+    font-size: 18px;
+    padding: 8px 12px;
+  }
+  .highscore {
+    font-size: 14px;
+    top: 75px;
+  }
+  .character-house {
+    width: 150px;
+    height: 150px;
+  }
+  .house-character {
+    width: 60px;
+    height: 60px;
+  }
+  .score-history {
+    max-height: 300px;
+  }
+  .music-toggle {
+    width: 40px;
+    height: 40px;
+    bottom: 15px;
+    right: 15px;
+  }
+  .music-icon {
+    width: 20px;
+    height: 20px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="game-wrapper" id="game-wrapper">
+  <button class="back-to-menu" id="back-to-menu" onclick="returnToMenu()" style="display: none;">← MENU</button>
+  <div class="music-toggle" id="music-toggle" onclick="toggleMusic()">
+    <svg class="music-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 3V21M8 6V18M16 6V18M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <div class="game-container" id="game-container">
+    <div class="secret-click-indicator" id="secret-click-indicator"></div>
+    <div class="menu" id="start-menu">
+      <h1>ASA CHEESE PUFFS</h1>
+      <div class="menu-content">
+        <div class="menu-left">
+          <div class="character-house">
+            <img src="https://imgs.search.brave.com/wY49KoSFbCEhAdd773X2PoIm6Al9R0bcmNVM03ND27Q/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jbGlwYXJ0LWxpYnJhcnkuY29tL2ltZzEvMzczMzgucG5n" alt="Character" class="house-character" id="house-character">
+          </div>
+          <button onclick="startGame()">START GAME</button>
+          <button onclick="showGameSettings()">GAME SETTINGS</button>
+          <button onclick="showTutorial()">HOW TO PLAY</button>
+          <button onclick="showSettings()">CONTROLS</button>
+          <button id="customize-btn" onclick="showCustomize()">CUSTOMIZE</button>
+          <button id="puff-customize-btn" onclick="showPuffCustomize()">CUSTOMIZE PUFFS</button>
+          <button id="sound-btn" onclick="showSoundSettings()">SOUND SETTINGS</button>
+        </div>
+        <div class="menu-right">
+          <div class="score-history">
+            <h3>RECENT SCORES</h3>
+            <div id="score-history-list"></div>
+          </div>
+          <div class="controls-info">
+            <p>CONTROLS:</p>
+            <p id="controls-pause">Q - Pause/Resume</p>
+            <p id="controls-restart">R - Restart Game</p>
+            <p id="controls-menu">ESC - Exit to Menu</p>
+            <p id="controls-settings">S - Settings (Menu Only)</p>
+            <p>Move mouse to move character!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="game-settings-screen" id="game-settings-screen">
+      <h1>GAME SETTINGS</h1>
+      <div class="preset-buttons">
+        <h3>PRESETS:</h3>
+        <button class="preset-button" onclick="loadPreset('easy')">EASY</button>
+        <button class="preset-button" onclick="loadPreset('normal')">NORMAL</button>
+        <button class="preset-button" onclick="loadPreset('hard')">HARD</button>
+        <button class="preset-button" onclick="loadPreset('insane')">INSANE</button>
+      </div>
+      <div class="game-settings-grid">
+        <div class="game-setting-item">
+          <h3>MAP SIZE</h3>
+          <div class="map-size-preview">
+            <div class="preview-box" id="map-preview"></div>
+          </div>
+          <input type="range" id="map-size-slider" class="game-setting-slider" 
+                 min="40" max="100" step="5" value="80">
+          <div class="game-setting-value" id="map-size-value">80% (Medium)</div>
+        </div>
+        <div class="game-setting-item">
+          <h3>GAME TIMER</h3>
+          <input type="range" id="timer-slider" class="game-setting-slider" 
+                 min="10" max="120" step="5" value="30">
+          <div class="game-setting-value" id="timer-value">30 seconds</div>
+        </div>
+        <div class="game-setting-item">
+          <h3>SPAWN SPEED</h3>
+          <input type="range" id="spawn-speed-slider" class="game-setting-slider" 
+                 min="200" max="2000" step="100" value="800">
+          <div class="game-setting-value" id="spawn-speed-value">800ms (Normal)</div>
+        </div>
+        <div class="game-setting-item">
+          <h3>CHEESE PUFF SIZE</h3>
+          <input type="range" id="puff-size-slider" class="game-setting-slider" 
+                 min="40" max="120" step="5" value="70">
+          <div class="game-setting-value" id="puff-size-value">70px (Normal)</div>
+        </div>
+        <div class="game-setting-item">
+          <h3>DESPAWN TIMER</h3>
+          <input type="range" id="despawn-timer-slider" class="game-setting-slider" 
+                 min="100" max="2000" step="100" value="500">
+          <div class="game-setting-value" id="despawn-timer-value">500ms (Normal)</div>
+        </div>
+        <div class="game-setting-item">
+          <h3>DIFFICULTY</h3>
+          <div class="game-setting-value" id="difficulty-value">NORMAL</div>
+        </div>
+      </div>
+      <button onclick="saveGameSettings()">SAVE & BACK</button>
+      <button onclick="hideGameSettings()">BACK</button>
+    </div>
+    <div class="puff-customize-screen" id="puff-customize-screen">
+      <h1>CUSTOMIZE CHEESE PUFFS</h1>
+      <div class="customize-option">
+        <p>Enter Cheese Puff Image URL:</p>
+        <input type="text" id="puff-image-url" placeholder="https://example.com/cheesepuff.jpg">
+        <button onclick="previewPuffImage()">PREVIEW</button>
+      </div>
+      <div id="puff-preview" class="puff-preview"></div>
+      <div class="customize-option">
+        <button onclick="savePuffImage()">SAVE</button>
+        <button onclick="resetPuffImage()">RESET</button>
+      </div>
+      <div class="customize-option">
+        <button onclick="hidePuffCustomize()">BACK</button>
+      </div>
+    </div>
+    <div class="unlock-notification" id="unlock-notification">
+      <h3>SECRET UNLOCKED!</h3>
+      <p>You found the secret!</p>
+      <p id="unlock-message">Character customization unlocked!</p>
+      <button onclick="hideUnlockNotification()">AWESOME!</button>
+    </div>
+    <div class="customize-screen" id="customize-screen">
+      <h1>CUSTOMIZE CHARACTER</h1>
+      <div id="customize-content">
+        <div class="customize-option">
+          <p>Enter Image URL:</p>
+          <input type="text" id="character-image-url" placeholder="https://example.com/image.jpg">
+          <button onclick="previewCharacterImage()">PREVIEW</button>
+        </div>
+        <img id="character-preview" class="preview-image" alt="Character Preview">
+        <div class="customize-option">
+          <button onclick="saveCharacterImage()">SAVE</button>
+          <button onclick="resetCharacterImage()">RESET</button>
+        </div>
+        <div class="customize-option">
+          <button onclick="hideCustomize()">BACK</button>
+        </div>
+      </div>
+    </div>
+    <div class="settings-screen" id="sound-settings-screen">
+      <h1>SOUND SETTINGS</h1>
+      <div id="sound-settings-disabled-message" class="settings-disabled-message" style="display: none;">
+        Sound settings can only be changed from the main menu!
+      </div>
+      <div class="sound-option">
+        <h3>CLICK SOUND</h3>
+        <p>Default sound: clicksound.mp3</p>
+        <div id="custom-sound-content">
+          <div class="customize-option">
+            <p>Enter Custom Sound URL:</p>
+            <input type="text" id="custom-sound-url" placeholder="https://example.com/sound.mp3">
+            <button onclick="previewCustomSound()">PREVIEW</button>
+          </div>
+          <div class="customize-option">
+            <button onclick="saveCustomSound()">SAVE</button>
+            <button onclick="resetCustomSound()">RESET</button>
+          </div>
+        </div>
+        <button class="sound-preview" onclick="previewCurrentSound()">PREVIEW CURRENT SOUND</button>
+      </div>
+      <button onclick="saveSoundSettings()">SAVE & BACK</button>
+      <button onclick="hideSoundSettings()">BACK</button>
+    </div>
+    <div class="tutorial-screen" id="tutorial-screen">
+      <h1>HOW TO PLAY</h1>
+      <div class="tutorial-content">
+        <div class="tutorial-step">
+          <h3>OBJECTIVE</h3>
+          <p>Collect cheese puffs before time runs out!</p>
+          <p>• +2 points for each collected</p>
+          <p>• -1 point if one disappears</p>
+        </div>
+        <div class="tutorial-step">
+          <h3>CONTROLS</h3>
+          <p><span class="tutorial-key">MOUSE</span> - Move character</p>
+          <p><span class="tutorial-key">CLICK</span> - Collect puffs</p>
+          <p><span class="tutorial-key" id="tutorial-pause">Q</span> - Pause/Resume</p>
+          <p><span class="tutorial-key" id="tutorial-restart">R</span> - Restart Game</p>
+          <p><span class="tutorial-key" id="tutorial-menu">ESC</span> - Main Menu</p>
+        </div>
+        <div class="tutorial-step">
+          <h3>GAME MECHANICS</h3>
+          <p>• Cheese puffs spawn randomly</p>
+          <p>• They disappear if not collected</p>
+          <p>• Character follows mouse</p>
+          <p>• Adjust settings for challenge!</p>
+        </div>
+      </div>
+      <button onclick="hideTutorial()">BACK TO MENU</button>
+    </div>
+    <div class="settings-screen" id="settings-screen">
+      <h1>CONTROLS SETTINGS</h1>
+      <div id="settings-disabled-message" class="settings-disabled-message" style="display: none;">
+        Settings can only be changed from the main menu!
+      </div>
+      <div class="setting-item">
+        <h3>KEYBINDS</h3>
+        <div class="keybind-item">
+          <span class="keybind-label">PAUSE/RESUME:</span>
+          <button class="keybind-button" id="keybind-pause" data-action="pause">Q</button>
+        </div>
+        <div class="keybind-item">
+          <span class="keybind-label">RESTART GAME:</span>
+          <button class="keybind-button" id="keybind-restart" data-action="restart">R</button>
+        </div>
+        <div class="keybind-item">
+          <span class="keybind-label">MAIN MENU:</span>
+          <button class="keybind-button" id="keybind-menu" data-action="menu">ESC</button>
+        </div>
+        <div class="keybind-item">
+          <span class="keybind-label">SETTINGS:</span>
+          <button class="keybind-button" id="keybind-settings" data-action="settings">S</button>
+        </div>
+        <button onclick="resetKeybinds()" style="margin-top: 10px;">RESET KEYBINDS</button>
+      </div>
+      <div class="setting-item">
+        <label for="sensitivity-slider">MOUSE SENSITIVITY:</label>
+        <div>
+          <input type="range" id="sensitivity-slider" class="sensitivity-slider" 
+                 min="0.1" max="3" step="0.05" value="1">
+        </div>
+        <div class="sensitivity-value" id="sensitivity-value">Current: 1.00x</div>
+      </div>
+      <button onclick="saveSettings()">SAVE & BACK</button>
+      <button onclick="hideSettings()">BACK</button>
+    </div>
+    <div class="pause-screen" id="pause-screen">
+      <h1>GAME PAUSED</h1>
+      <button onclick="resumeGame()">RESUME</button>
+      <button onclick="showTutorial()">HOW TO PLAY</button>
+      <button onclick="returnToMenu()">MAIN MENU</button>
+      <button onclick="restartGame()">RESTART</button>
+    </div>
+    <div class="character" id="character">
+      <img src="https://imgs.search.brave.com/wY49KoSFbCEhAdd773X2PoIm6Al9R0bcmNVM03ND27Q/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jbGlwYXJ0LWxpYnJhcnkuY29tL2ltZzEvMzczMzgucG5n" alt="Character" id="character-img">
+    </div>
+    <div id="score" class="scaled-ui" style="top: 15px; right: 15px;">Score: 0</div>
+    <div id="timer" class="scaled-ui" style="top: 65px; left: 15px;">30</div>
+    <div id="highscore" class="scaled-ui" style="top: 85px; right: 15px;">Highscore: 0</div>
+    <div class="game-over" id="game-over">
+      <div id="final-score">Score: 0</div>
+      <div id="highscore-message"></div>
+      <button onclick="restartGame()">Try Again?</button>
+      <button onclick="returnToMenu()">Main Menu</button>
+    </div>
+  </div>
+</div>
+<audio id="cheesepuff-sound" src="clicksound.mp3" preload="auto"></audio>
+<audio id="background-music" src="backgroundmusic.mp3" preload="auto" loop></audio>
+<script>
+const gameWrapper = document.getElementById('game-wrapper');
+const gameContainer = document.getElementById('game-container');
+const cheesepuffSound = document.getElementById('cheesepuff-sound');
+const backgroundMusic = document.getElementById('background-music');
+const character = document.getElementById('character');
+const characterImg = document.getElementById('character-img');
+const houseCharacter = document.getElementById('house-character');
+const scoreDisplay = document.getElementById('score');
+const timerDisplay = document.getElementById('timer');
+const gameOverHUD = document.getElementById('game-over');
+const finalScore = document.getElementById('final-score');
+const highscoreMessage = document.getElementById('highscore-message');
+const startMenu = document.getElementById('start-menu');
+const pauseScreen = document.getElementById('pause-screen');
+const settingsScreen = document.getElementById('settings-screen');
+const gameSettingsScreen = document.getElementById('game-settings-screen');
+const tutorialScreen = document.getElementById('tutorial-screen');
+const customizeScreen = document.getElementById('customize-screen');
+const puffCustomizeScreen = document.getElementById('puff-customize-screen');
+const customizeContent = document.getElementById('customize-content');
+const customizeBtn = document.getElementById('customize-btn');
+const puffCustomizeBtn = document.getElementById('puff-customize-btn');
+const soundBtn = document.getElementById('sound-btn');
+const unlockNotification = document.getElementById('unlock-notification');
+const unlockMessage = document.getElementById('unlock-message');
+const highscoreDisplay = document.getElementById('highscore');
+const sensitivitySlider = document.getElementById('sensitivity-slider');
+const sensitivityValue = document.getElementById('sensitivity-value');
+const characterImageUrl = document.getElementById('character-image-url');
+const characterPreview = document.getElementById('character-preview');
+const backToMenuBtn = document.getElementById('back-to-menu');
+const settingsDisabledMessage = document.getElementById('settings-disabled-message');
+const scoreHistoryList = document.getElementById('score-history-list');
+const secretClickIndicator = document.getElementById('secret-click-indicator');
+const musicToggle = document.getElementById('music-toggle');
+const puffImageUrl = document.getElementById('puff-image-url');
+const puffPreview = document.getElementById('puff-preview');
+const controlsPause = document.getElementById('controls-pause');
+const controlsRestart = document.getElementById('controls-restart');
+const controlsMenu = document.getElementById('controls-menu');
+const controlsSettings = document.getElementById('controls-settings');
+const soundSettingsScreen = document.getElementById('sound-settings-screen');
+const soundSettingsDisabledMessage = document.getElementById('sound-settings-disabled-message');
+const customSoundUrl = document.getElementById('custom-sound-url');
+const customSoundContent = document.getElementById('custom-sound-content');
+const mapSizeSlider = document.getElementById('map-size-slider');
+const mapSizeValue = document.getElementById('map-size-value');
+const timerSlider = document.getElementById('timer-slider');
+const timerValue = document.getElementById('timer-value');
+const spawnSpeedSlider = document.getElementById('spawn-speed-slider');
+const spawnSpeedValue = document.getElementById('spawn-speed-value');
+const puffSizeSlider = document.getElementById('puff-size-slider');
+const puffSizeValue = document.getElementById('puff-size-value');
+const despawnTimerSlider = document.getElementById('despawn-timer-slider');
+const despawnTimerValue = document.getElementById('despawn-timer-value');
+const difficultyValue = document.getElementById('difficulty-value');
+const mapPreview = document.getElementById('map-preview');
+const keybindPause = document.getElementById('keybind-pause');
+const keybindRestart = document.getElementById('keybind-restart');
+const keybindMenu = document.getElementById('keybind-menu');
+const keybindSettings = document.getElementById('keybind-settings');
+const tutorialPause = document.getElementById('tutorial-pause');
+const tutorialRestart = document.getElementById('tutorial-restart');
+const tutorialMenu = document.getElementById('tutorial-menu');
+
+let cheesePuffs = [];
+let score = 0;
+let timer = 30;
+let spawnInterval, timerInterval;
+let gameStarted = false;
+let gamePaused = false;
+let highscore = 0;
+let mouseSensitivity = 1.0;
+let characterUnlocked = true;
+let soundUnlocked = true;
+let timerClicked = false;
+let totalCheesePuffsCollected = 0;
+let musicMuted = false;
+let customPuffImage = null;
+let keybinds = {
+  pause: 'q',
+  restart: 'r',
+  menu: 'Escape',
+  settings: 's'
+};
+let waitingForKeybind = false;
+let currentKeybindAction = null;
+let gameSettings = {
+  mapSize: 80,
+  gameTimer: 30,
+  spawnSpeed: 800,
+  puffSize: 70,
+  despawnTimer: 500
+};
+const BASE_WIDTH = 1200;
+const BASE_HEIGHT = 800;
+const BASE_UI_FONT_SIZE = 22;
+const BASE_UI_PADDING = 12;
+const BASE_UI_BORDER_RADIUS = 6;
+const UI_BOUNDARIES = {
+  top: {
+    x1: 0,
+    y1: 0,
+    x2: BASE_WIDTH,
+    y2: 120
+  },
+  right: {
+    x1: BASE_WIDTH - 200,
+    y1: 0,
+    x2: BASE_WIDTH,
+    y2: 120
+  },
+  left: {
+    x1: 0,
+    y1: 0,
+    x2: 200,
+    y2: 120
+  }
+};
+
+gameContainer.style.width = BASE_WIDTH + 'px';
+gameContainer.style.height = BASE_HEIGHT + 'px';
+loadSavedData();
+backgroundMusic.volume = 0.5;
+backgroundMusic.play().catch(e => {});
+
+document.addEventListener('dragstart', (e) => {
+  e.preventDefault();
+  return false;
+});
+
+document.addEventListener('contextmenu', (e) => {
+  e.preventDefault();
+  return false;
+});
+
+timerDisplay.addEventListener('click', handleTimerClick);
+
+function handleTimerClick(e) {
+  if (!gameStarted) return;
+  
+  if (!timerClicked) {
+    timerClicked = true;
+    
+    secretClickIndicator.textContent = 'SECRET FOUND!';
+    secretClickIndicator.style.opacity = '0.7';
+    setTimeout(() => {
+      secretClickIndicator.style.opacity = '0.3';
+      setTimeout(() => {
+        secretClickIndicator.textContent = '';
+      }, 1000);
+    }, 2000);
+  }
+}
+
+function toggleMusic() {
+  musicMuted = !musicMuted;
+  
+  if (musicMuted) {
+    backgroundMusic.pause();
+    musicToggle.classList.add('muted');
+  } else {
+    backgroundMusic.play().catch(e => {});
+    musicToggle.classList.remove('muted');
+  }
+  
+  localStorage.setItem('cheesepuff_music_muted', musicMuted.toString());
+}
+
+document.addEventListener('keydown', (e) => {
+  if (waitingForKeybind && currentKeybindAction) {
+    e.preventDefault();
+    setKeybind(currentKeybindAction, e.key);
+    return;
+  }
+  
+  if (e.key.toLowerCase() === keybinds.restart.toLowerCase()) {
+    restartGame();
+  } else if (e.key.toLowerCase() === keybinds.pause.toLowerCase()) {
+    if (gameStarted && !gameOverHUD.style.display || gameOverHUD.style.display === 'none') {
+      togglePause();
+    }
+  } else if (e.key.toLowerCase() === keybinds.settings.toLowerCase()) {
+    if (!gameStarted) {
+      showSettings();
+    }
+  } else if (e.key === keybinds.menu) {
+    if (gameStarted) {
+      returnToMenu();
+    } else {
+      if (settingsScreen.style.display === 'block' || 
+          gameSettingsScreen.style.display === 'block' ||
+          tutorialScreen.style.display === 'block' ||
+          customizeScreen.style.display === 'block' ||
+          puffCustomizeScreen.style.display === 'block' ||
+          soundSettingsScreen.style.display === 'block') {
+        showMenu();
+      }
+    }
+  }
+});
+
+function setupKeybindListeners() {
+  keybindPause.addEventListener('click', () => startKeybindChange('pause'));
+  keybindRestart.addEventListener('click', () => startKeybindChange('restart'));
+  keybindMenu.addEventListener('click', () => startKeybindChange('menu'));
+  keybindSettings.addEventListener('click', () => startKeybindChange('settings'));
+}
+
+function startKeybindChange(action) {
+  if (waitingForKeybind) return;
+  
+  waitingForKeybind = true;
+  currentKeybindAction = action;
+  
+  const button = document.getElementById(`keybind-${action}`);
+  button.classList.add('waiting');
+  button.textContent = 'Press any key...';
+  
+  setTimeout(() => {
+    if (waitingForKeybind) {
+      cancelKeybindChange();
+    }
+  }, 5000);
+}
+
+function cancelKeybindChange() {
+  waitingForKeybind = false;
+  if (currentKeybindAction) {
+    const button = document.getElementById(`keybind-${currentKeybindAction}`);
+    button.classList.remove('waiting');
+    updateKeybindButton(currentKeybindAction);
+  }
+  currentKeybindAction = null;
+}
+
+function setKeybind(action, key) {
+  if (key === ' ' || key === 'Enter' || key === 'Tab') {
+    alert('That key cannot be used as a keybind.');
+    cancelKeybindChange();
+    return;
+  }
+  
+  for (const [existingAction, existingKey] of Object.entries(keybinds)) {
+    if (existingKey.toLowerCase() === key.toLowerCase() && existingAction !== action) {
+      alert(`The key "${key}" is already bound to "${existingAction}".`);
+      cancelKeybindChange();
+      return;
+    }
+  }
+  
+  keybinds[action] = key;
+  updateKeybindButton(action);
+  waitingForKeybind = false;
+  currentKeybindAction = null;
+  
+  updateTutorialKeybinds();
+  updateControlsDisplay();
+}
+
+function updateKeybindButton(action) {
+  const button = document.getElementById(`keybind-${action}`);
+  button.classList.remove('waiting');
+  button.textContent = formatKeyDisplay(keybinds[action]);
+}
+
+function updateTutorialKeybinds() {
+  tutorialPause.textContent = formatKeyDisplay(keybinds.pause);
+  tutorialRestart.textContent = formatKeyDisplay(keybinds.restart);
+  tutorialMenu.textContent = formatKeyDisplay(keybinds.menu);
+}
+
+function updateControlsDisplay() {
+  controlsPause.textContent = `${formatKeyDisplay(keybinds.pause)} - Pause/Resume`;
+  controlsRestart.textContent = `${formatKeyDisplay(keybinds.restart)} - Restart Game`;
+  controlsMenu.textContent = `${formatKeyDisplay(keybinds.menu)} - Exit to Menu`;
+  controlsSettings.textContent = `${formatKeyDisplay(keybinds.settings)} - Settings (Menu Only)`;
+}
+
+function formatKeyDisplay(key) {
+  if (key === 'Escape') return 'ESC';
+  if (key === ' ') return 'SPACE';
+  return key.toUpperCase();
+}
+
+function resetKeybinds() {
+  keybinds = {
+    pause: 'q',
+    restart: 'r',
+    menu: 'Escape',
+    settings: 's'
+  };
+  
+  updateKeybindButton('pause');
+  updateKeybindButton('restart');
+  updateKeybindButton('menu');
+  updateKeybindButton('settings');
+  updateTutorialKeybinds();
+  updateControlsDisplay();
+  
+  alert('Keybinds reset to defaults!');
+}
+
+function loadSavedData() {
+  const savedHighscore = localStorage.getItem('cheesepuff_highscore');
+  if (savedHighscore) {
+    highscore = parseInt(savedHighscore);
+    highscoreDisplay.textContent = `Highscore: ${highscore}`;
+  }
+  
+  const savedSensitivity = localStorage.getItem('cheesepuff_sensitivity');
+  if (savedSensitivity) {
+    mouseSensitivity = parseFloat(savedSensitivity);
+    sensitivitySlider.value = mouseSensitivity;
+    sensitivityValue.textContent = `Current: ${mouseSensitivity.toFixed(2)}x`;
+  }
+  
+  const savedUnlocked = localStorage.getItem('cheesepuff_character_unlocked');
+  if (savedUnlocked === 'true') {
+    characterUnlocked = true;
+  } else {
+    characterUnlocked = true;
+    localStorage.setItem('cheesepuff_character_unlocked', 'true');
+  }
+  updateCustomizeButton();
+  
+  const savedCharacterImage = localStorage.getItem('cheesepuff_character_image');
+  if (savedCharacterImage && characterUnlocked) {
+    characterImg.src = savedCharacterImage;
+    houseCharacter.src = savedCharacterImage;
+  }
+  
+  const savedPuffImage = localStorage.getItem('cheesepuff_puff_image');
+  if (savedPuffImage) {
+    customPuffImage = savedPuffImage;
+  }
+  
+  const savedSoundUnlocked = localStorage.getItem('cheesepuff_sound_unlocked');
+  if (savedSoundUnlocked === 'true') {
+    soundUnlocked = true;
+  } else {
+    soundUnlocked = true;
+    localStorage.setItem('cheesepuff_sound_unlocked', 'true');
+  }
+  updateSoundButton();
+  
+  const savedCustomSound = localStorage.getItem('cheesepuff_custom_sound');
+  if (savedCustomSound && soundUnlocked) {
+    cheesepuffSound.src = savedCustomSound;
+  }
+  
+  const savedMusicMuted = localStorage.getItem('cheesepuff_music_muted');
+  if (savedMusicMuted === 'true') {
+    musicMuted = true;
+    musicToggle.classList.add('muted');
+    backgroundMusic.pause();
+  } else {
+    musicMuted = false;
+    musicToggle.classList.remove('muted');
+  }
+  
+  const savedGameSettings = localStorage.getItem('cheesepuff_game_settings');
+  if (savedGameSettings) {
+    gameSettings = JSON.parse(savedGameSettings);
+    updateGameSettingsUI();
+  }
+  
+  const savedKeybinds = localStorage.getItem('cheesepuff_keybinds');
+  if (savedKeybinds) {
+    keybinds = JSON.parse(savedKeybinds);
+    updateKeybindButton('pause');
+    updateKeybindButton('restart');
+    updateKeybindButton('menu');
+    updateKeybindButton('settings');
+    updateTutorialKeybinds();
+    updateControlsDisplay();
+  }
+  
+  const savedTotalPuffs = localStorage.getItem('cheesepuff_total_collected');
+  if (savedTotalPuffs) {
+    totalCheesePuffsCollected = parseInt(savedTotalPuffs);
+  }
+  
+  loadScoreHistory();
+}
+
+function loadScoreHistory() {
+  const savedScores = localStorage.getItem('cheesepuff_score_history');
+  const scores = savedScores ? JSON.parse(savedScores) : [];
+  
+  scoreHistoryList.innerHTML = '';
+  
+  if (scores.length === 0) {
+    scoreHistoryList.innerHTML = '<div class="no-scores">No scores yet!<br>Play a game to see your scores here.</div>';
+    return;
+  }
+  
+  const recentScores = scores.slice(-13).reverse();
+  
+  recentScores.forEach(scoreData => {
+    const scoreItem = document.createElement('div');
+    scoreItem.className = 'score-item';
+    
+    const date = new Date(scoreData.date);
+    const dateString = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    
+    scoreItem.innerHTML = `
+      <span class="score-value">${scoreData.score} points</span>
+      <span class="score-date">${dateString}</span>
+    `;
+    
+    scoreHistoryList.appendChild(scoreItem);
+  });
+}
+
+function saveScoreHistory(score) {
+  const savedScores = localStorage.getItem('cheesepuff_score_history');
+  const scores = savedScores ? JSON.parse(savedScores) : [];
+  
+  scores.push({
+    score: score,
+    date: new Date().toISOString()
+  });
+  
+  if (scores.length > 13) {
+    scores.splice(0, scores.length - 13);
+  }
+  
+  localStorage.setItem('cheesepuff_score_history', JSON.stringify(scores));
+  loadScoreHistory();
+  
+  updateHighscoreFromRecent();
+}
+
+function updateHighscoreFromRecent() {
+  const savedScores = localStorage.getItem('cheesepuff_score_history');
+  const scores = savedScores ? JSON.parse(savedScores) : [];
+  
+  const recentScores = scores.slice(-13);
+  
+  let newHighscore = 0;
+  if (recentScores.length > 0) {
+    newHighscore = Math.max(...recentScores.map(s => s.score));
+  }
+  
+  if (newHighscore !== highscore) {
+    highscore = newHighscore;
+    localStorage.setItem('cheesepuff_highscore', highscore.toString());
+    highscoreDisplay.textContent = `Highscore: ${highscore}`;
+  }
+}
+
+function updateGameSettingsUI() {
+  mapSizeSlider.value = gameSettings.mapSize;
+  timerSlider.value = gameSettings.gameTimer;
+  spawnSpeedSlider.value = gameSettings.spawnSpeed;
+  puffSizeSlider.value = gameSettings.puffSize;
+  despawnTimerSlider.value = gameSettings.despawnTimer;
+  
+  updateMapSizePreview();
+  updateTimerValue();
+  updateSpawnSpeedValue();
+  updatePuffSizeValue();
+  updateDespawnTimerValue();
+  updateDifficulty();
+}
+
+function updateMapSizePreview() {
+  const size = gameSettings.mapSize;
+  const scale = size / 100;
+  const previewWidth = 180 * scale;
+  const previewHeight = 100 * scale;
+  const offsetX = (180 - previewWidth) / 2;
+  const offsetY = (100 - previewHeight) / 2;
+  
+  mapPreview.style.width = `${previewWidth}px`;
+  mapPreview.style.height = `${previewHeight}px`;
+  mapPreview.style.left = `${offsetX}px`;
+  mapPreview.style.top = `${offsetY}px`;
+  
+  let sizeText;
+  if (size <= 50) sizeText = "Tiny";
+  else if (size <= 65) sizeText = "Small";
+  else if (size <= 80) sizeText = "Medium";
+  else if (size <= 95) sizeText = "Large";
+  else sizeText = "Full";
+  
+  mapSizeValue.textContent = `${size}% (${sizeText})`;
+}
+
+function updateTimerValue() {
+  const time = gameSettings.gameTimer;
+  timerValue.textContent = `${time} seconds`;
+}
+
+function updateSpawnSpeedValue() {
+  const speed = gameSettings.spawnSpeed;
+  let speedText;
+  if (speed <= 300) speedText = "Very Fast";
+  else if (speed <= 500) speedText = "Fast";
+  else if (speed <= 800) speedText = "Normal";
+  else if (speed <= 1200) speedText = "Slow";
+  else speedText = "Very Slow";
+  
+  spawnSpeedValue.textContent = `${speed}ms (${speedText})`;
+}
+
+function updatePuffSizeValue() {
+  const size = gameSettings.puffSize;
+  let sizeText;
+  if (size <= 50) sizeText = "Tiny";
+  else if (size <= 65) sizeText = "Small";
+  else if (size <= 80) sizeText = "Normal";
+  else if (size <= 95) sizeText = "Large";
+  else sizeText = "Huge";
+  
+  puffSizeValue.textContent = `${size}px (${sizeText})`;
+}
+
+function updateDespawnTimerValue() {
+  const time = gameSettings.despawnTimer;
+  let timeText;
+  if (time <= 300) timeText = "Very Fast";
+  else if (time <= 500) timeText = "Fast";
+  else if (time <= 800) timeText = "Normal";
+  else if (time <= 1200) timeText = "Slow";
+  else timeText = "Very Slow";
+  
+  despawnTimerValue.textContent = `${time}ms (${timeText})`;
+}
+
+function updateDifficulty() {
+  const mapSize = gameSettings.mapSize;
+  const spawnSpeed = gameSettings.spawnSpeed;
+  const puffSize = gameSettings.puffSize;
+  const despawnTimer = gameSettings.despawnTimer;
+  
+  let difficulty = "CUSTOM";
+  
+  const sizeFactor = (100 - mapSize) / 20;
+  const speedFactor = (2000 - spawnSpeed) / 400;
+  const puffFactor = (120 - puffSize) / 20;
+  const despawnFactor = (2000 - despawnTimer) / 400;
+  const totalDifficulty = sizeFactor + speedFactor + puffFactor + despawnFactor;
+  
+  if (totalDifficulty < 1.5) difficulty = "VERY EASY";
+  else if (totalDifficulty < 2.5) difficulty = "EASY";
+  else if (totalDifficulty < 3.5) difficulty = "NORMAL";
+  else if (totalDifficulty < 4.5) difficulty = "HARD";
+  else if (totalDifficulty < 5.5) difficulty = "VERY HARD";
+  else difficulty = "INSANE";
+  
+  difficultyValue.textContent = difficulty;
+}
+
+function loadPreset(preset) {
+  switch(preset) {
+    case 'easy':
+      gameSettings = { mapSize: 95, gameTimer: 45, spawnSpeed: 1200, puffSize: 85, despawnTimer: 800 };
+      break;
+    case 'normal':
+      gameSettings = { mapSize: 80, gameTimer: 30, spawnSpeed: 800, puffSize: 70, despawnTimer: 500 };
+      break;
+    case 'hard':
+      gameSettings = { mapSize: 65, gameTimer: 25, spawnSpeed: 500, puffSize: 55, despawnTimer: 300 };
+      break;
+    case 'insane':
+      gameSettings = { mapSize: 50, gameTimer: 20, spawnSpeed: 300, puffSize: 40, despawnTimer: 100 };
+      break;
+  }
+  updateGameSettingsUI();
+}
+
+function saveGameSettings() {
+  gameSettings.mapSize = parseInt(mapSizeSlider.value);
+  gameSettings.gameTimer = parseInt(timerSlider.value);
+  gameSettings.spawnSpeed = parseInt(spawnSpeedSlider.value);
+  gameSettings.puffSize = parseInt(puffSizeSlider.value);
+  gameSettings.despawnTimer = parseInt(despawnTimerSlider.value);
+  
+  localStorage.setItem('cheesepuff_game_settings', JSON.stringify(gameSettings));
+  hideGameSettings();
+}
+
+function showGameSettings() {
+  gameSettingsScreen.style.display = 'block';
+  startMenu.style.display = 'none';
+  settingsScreen.style.display = 'none';
+  tutorialScreen.style.display = 'none';
+  customizeScreen.style.display = 'none';
+  puffCustomizeScreen.style.display = 'none';
+  soundSettingsScreen.style.display = 'none';
+}
+
+function hideGameSettings() {
+  gameSettingsScreen.style.display = 'none';
+  startMenu.style.display = 'block';
+}
+
+function showPuffCustomize() {
+  puffCustomizeScreen.style.display = 'block';
+  startMenu.style.display = 'none';
+  settingsScreen.style.display = 'none';
+  tutorialScreen.style.display = 'none';
+  customizeScreen.style.display = 'none';
+  gameSettingsScreen.style.display = 'none';
+  soundSettingsScreen.style.display = 'none';
+  
+  const savedPuffImage = localStorage.getItem('cheesepuff_puff_image');
+  if (savedPuffImage) {
+    puffImageUrl.value = savedPuffImage;
+    previewPuffImage();
+  }
+}
+
+function hidePuffCustomize() {
+  puffCustomizeScreen.style.display = 'none';
+  startMenu.style.display = 'block';
+}
+
+function previewPuffImage() {
+  const url = puffImageUrl.value.trim();
+  if (url) {
+    puffPreview.style.backgroundImage = `url('${url}')`;
+    puffPreview.style.display = 'block';
+    
+    const testImage = new Image();
+    testImage.onerror = function() {
+      alert('Error loading image. Please check the URL and try again.');
+      puffPreview.style.display = 'none';
+    };
+    testImage.src = url;
+  }
+}
+
+function savePuffImage() {
+  const url = puffImageUrl.value.trim();
+  if (url) {
+    const testImage = new Image();
+    testImage.onload = function() {
+      customPuffImage = url;
+      localStorage.setItem('cheesepuff_puff_image', url);
+      alert('Cheese puff image saved successfully!');
+    };
+    testImage.onerror = function() {
+      alert('Error loading image. Please check the URL and try again.');
+    };
+    testImage.src = url;
+  } else {
+    alert('Please enter an image URL.');
+  }
+}
+
+function resetPuffImage() {
+  const defaultImage = 'https://imgs.search.brave.com/wY49KoSFbCEhAdd773X2PoIm6Al9R0bcmNVM03ND27Q/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jbGlwYXJ0LWxpYnJhcnkuY29tL2ltZzEvMzczMzgucG5n';
+  customPuffImage = null;
+  puffImageUrl.value = '';
+  puffPreview.style.display = 'none';
+  localStorage.removeItem('cheesepuff_puff_image');
+  alert('Cheese puff image reset to default!');
+}
+
+mapSizeSlider.addEventListener('input', function() {
+  gameSettings.mapSize = parseInt(this.value);
+  updateMapSizePreview();
+  updateDifficulty();
+});
+
+timerSlider.addEventListener('input', function() {
+  gameSettings.gameTimer = parseInt(this.value);
+  updateTimerValue();
+});
+
+spawnSpeedSlider.addEventListener('input', function() {
+  gameSettings.spawnSpeed = parseInt(this.value);
+  updateSpawnSpeedValue();
+  updateDifficulty();
+});
+
+puffSizeSlider.addEventListener('input', function() {
+  gameSettings.puffSize = parseInt(this.value);
+  updatePuffSizeValue();
+  updateDifficulty();
+});
+
+despawnTimerSlider.addEventListener('input', function() {
+  gameSettings.despawnTimer = parseInt(this.value);
+  updateDespawnTimerValue();
+  updateDifficulty();
+});
+
+function saveHighscore() {
+  if (score > highscore) {
+    highscore = score;
+    localStorage.setItem('cheesepuff_highscore', highscore.toString());
+    highscoreDisplay.textContent = `Highscore: ${highscore}`;
+    return true;
+  }
+  return false;
+}
+
+function hideUnlockNotification() {
+  unlockNotification.style.display = 'none';
+}
+
+function updateCustomizeButton() {
+  customizeBtn.style.opacity = '1';
+  customizeBtn.innerHTML = 'CUSTOMIZE CHARACTER';
+}
+
+function updateSoundButton() {
+  soundBtn.style.opacity = '1';
+  soundBtn.innerHTML = 'SOUND SETTINGS';
+  customSoundContent.style.display = 'block';
+}
+
+function showCustomize() {
+  customizeScreen.style.display = 'block';
+  customizeContent.style.display = 'block';
+  startMenu.style.display = 'none';
+  settingsScreen.style.display = 'none';
+  tutorialScreen.style.display = 'none';
+  gameSettingsScreen.style.display = 'none';
+  puffCustomizeScreen.style.display = 'none';
+  soundSettingsScreen.style.display = 'none';
+  
+  const savedImage = localStorage.getItem('cheesepuff_character_image');
+  if (savedImage) {
+    characterImageUrl.value = savedImage;
+    previewCharacterImage();
+  }
+}
+
+function hideCustomize() {
+  customizeScreen.style.display = 'none';
+  startMenu.style.display = 'block';
+}
+
+function showSoundSettings() {
+  if (!gameStarted) {
+    soundSettingsScreen.style.display = 'block';
+    startMenu.style.display = 'none';
+    settingsScreen.style.display = 'none';
+    tutorialScreen.style.display = 'none';
+    customizeScreen.style.display = 'none';
+    puffCustomizeScreen.style.display = 'none';
+    gameSettingsScreen.style.display = 'none';
+    soundSettingsDisabledMessage.style.display = 'none';
+    
+    const savedCustomSound = localStorage.getItem('cheesepuff_custom_sound');
+    if (savedCustomSound) {
+      customSoundUrl.value = savedCustomSound;
+    }
+  } else {
+    soundSettingsScreen.style.display = 'block';
+    soundSettingsDisabledMessage.style.display = 'block';
+  }
+}
+
+function hideSoundSettings() {
+  soundSettingsScreen.style.display = 'none';
+  startMenu.style.display = 'block';
+}
+
+function previewCustomSound() {
+  const url = customSoundUrl.value.trim();
+  if (url) {
+    const tempSound = new Audio(url);
+    tempSound.oncanplaythrough = function() {
+      tempSound.play().catch(e => {
+        alert('Could not play the sound. Please check the URL and try again.');
+      });
+    };
+    tempSound.onerror = function() {
+      alert('Error loading sound. Please check the URL and try again.');
+    };
+  }
+}
+
+function saveCustomSound() {
+  const url = customSoundUrl.value.trim();
+  if (url) {
+    const testSound = new Audio(url);
+    testSound.oncanplaythrough = function() {
+      localStorage.setItem('cheesepuff_custom_sound', url);
+      
+      cheesepuffSound.src = url;
+      
+      alert('Custom sound saved successfully!');
+    };
+    testSound.onerror = function() {
+      alert('Error loading sound. Please check the URL and try again.');
+    };
+  } else {
+    alert('Please enter a sound URL.');
+  }
+}
+
+function resetCustomSound() {
+  const defaultSound = 'clicksound.mp3';
+  
+  localStorage.removeItem('cheesepuff_custom_sound');
+  
+  cheesepuffSound.src = defaultSound;
+  customSoundUrl.value = '';
+  
+  alert('Click sound reset to default!');
+}
+
+function previewCurrentSound() {
+  cheesepuffSound.currentTime = 0;
+  cheesepuffSound.play().catch(e => {
+    alert('Could not play the current sound.');
+  });
+}
+
+function saveSoundSettings() {
+  hideSoundSettings();
+}
+
+function previewCharacterImage() {
+  const url = characterImageUrl.value.trim();
+  if (url) {
+    characterPreview.src = url;
+    characterPreview.style.display = 'block';
+    characterPreview.onerror = function() {
+      alert('Error loading image. Please check the URL and try again.');
+      characterPreview.style.display = 'none';
+    };
+  }
+}
+
+function saveCharacterImage() {
+  const url = characterImageUrl.value.trim();
+  if (url) {
+    const testImage = new Image();
+    testImage.onload = function() {
+      characterImg.src = url;
+      houseCharacter.src = url;
+      localStorage.setItem('cheesepuff_character_image', url);
+      alert('Character image saved successfully!');
+    };
+    testImage.onerror = function() {
+      alert('Error loading image. Please check the URL and try again.');
+    };
+    testImage.src = url;
+  } else {
+    alert('Please enter an image URL.');
+  }
+}
+
+function resetCharacterImage() {
+  const defaultImage = 'https://imgs.search.brave.com/wY49KoSFbCEhAdd773X2PoIm6Al9R0bcmNVM03ND27Q/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jbGlwYXJ0LWxpYnJhcnkuY29tL2ltZzEvMzczMzgucG5n';
+  characterImg.src = defaultImage;
+  houseCharacter.src = defaultImage;
+  characterImageUrl.value = '';
+  characterPreview.style.display = 'none';
+  localStorage.removeItem('cheesepuff_character_image');
+  alert('Character image reset to default!');
+}
+
+function saveSettings() {
+  mouseSensitivity = parseFloat(sensitivitySlider.value);
+  localStorage.setItem('cheesepuff_sensitivity', mouseSensitivity.toString());
+  sensitivityValue.textContent = `Current: ${mouseSensitivity.toFixed(2)}x`;
+  
+  localStorage.setItem('cheesepuff_keybinds', JSON.stringify(keybinds));
+  
+  hideSettings();
+}
+
+function showSettings() {
+  if (!gameStarted) {
+    settingsScreen.style.display = 'block';
+    startMenu.style.display = 'none';
+    tutorialScreen.style.display = 'none';
+    customizeScreen.style.display = 'none';
+    puffCustomizeScreen.style.display = 'none';
+    gameSettingsScreen.style.display = 'none';
+    soundSettingsScreen.style.display = 'none';
+    settingsDisabledMessage.style.display = 'none';
+    sensitivitySlider.disabled = false;
+  } else {
+    settingsScreen.style.display = 'block';
+    settingsDisabledMessage.style.display = 'block';
+    sensitivitySlider.disabled = true;
+  }
+}
+
+function hideSettings() {
+  settingsScreen.style.display = 'none';
+  startMenu.style.display = 'block';
+}
+
+function showTutorial() {
+  tutorialScreen.style.display = 'block';
+  startMenu.style.display = 'none';
+  settingsScreen.style.display = 'none';
+  customizeScreen.style.display = 'none';
+  puffCustomizeScreen.style.display = 'none';
+  gameSettingsScreen.style.display = 'none';
+  soundSettingsScreen.style.display = 'none';
+}
+
+function hideTutorial() {
+  tutorialScreen.style.display = 'none';
+  startMenu.style.display = 'block';
+}
+
+function showMenu() {
+  gameOverHUD.style.display = 'none';
+  pauseScreen.style.display = 'none';
+  settingsScreen.style.display = 'none';
+  tutorialScreen.style.display = 'none';
+  customizeScreen.style.display = 'none';
+  puffCustomizeScreen.style.display = 'none';
+  gameSettingsScreen.style.display = 'none';
+  soundSettingsScreen.style.display = 'none';
+  startMenu.style.display = 'block';
+  backToMenuBtn.style.display = 'none';
+  gameStarted = false;
+  gamePaused = false;
+  document.body.style.cursor = 'default';
+  character.style.display = 'none';
+  timerClicked = false;
+  secretClickIndicator.textContent = '';
+  scoreDisplay.style.display = 'none';
+  timerDisplay.style.display = 'none';
+  highscoreDisplay.style.display = 'none';
+  loadScoreHistory();
+}
+
+function returnToMenu() {
+  if (gameStarted) {
+    clearInterval(spawnInterval);
+    clearInterval(timerInterval);
+    cheesePuffs.forEach(p => p.remove());
+    cheesePuffs = [];
+    
+    gameContainer.style.width = BASE_WIDTH + 'px';
+    gameContainer.style.height = BASE_HEIGHT + 'px';
+    
+    gameStarted = false;
+    gamePaused = false;
+  }
+  showMenu();
+}
+
+function startGame() {
+  startMenu.style.display = 'none';
+  settingsScreen.style.display = 'none';
+  tutorialScreen.style.display = 'none';
+  customizeScreen.style.display = 'none';
+  puffCustomizeScreen.style.display = 'none';
+  gameSettingsScreen.style.display = 'none';
+  soundSettingsScreen.style.display = 'none';
+  backToMenuBtn.style.display = 'block';
+  gameStarted = true;
+  gamePaused = false;
+  resetGame();
+  applyGameSettings();
+  startSpawning();
+  startTimer();
+  document.body.style.cursor = 'none';
+  character.style.display = 'block';
+  timerClicked = false;
+  secretClickIndicator.textContent = '';
+  scoreDisplay.style.display = 'block';
+  timerDisplay.style.display = 'block';
+  highscoreDisplay.style.display = 'block';
+}
+
+function scaleUI() {
+  const scale = gameSettings.mapSize / 100;
+  
+  const fontSize = Math.max(14, BASE_UI_FONT_SIZE * scale);
+  scoreDisplay.style.fontSize = `${fontSize}px`;
+  timerDisplay.style.fontSize = `${fontSize}px`;
+  highscoreDisplay.style.fontSize = `${Math.max(12, 16 * scale)}px`;
+  
+  const padding = Math.max(6, BASE_UI_PADDING * scale);
+  scoreDisplay.style.padding = `${padding}px ${padding * 1.5}px`;
+  timerDisplay.style.padding = `${padding}px ${padding * 1.5}px`;
+  highscoreDisplay.style.padding = `${padding * 0.75}px ${padding * 1.25}px`;
+  
+  const borderRadius = Math.max(4, BASE_UI_BORDER_RADIUS * scale);
+  scoreDisplay.style.borderRadius = `${borderRadius}px`;
+  timerDisplay.style.borderRadius = `${borderRadius}px`;
+  highscoreDisplay.style.borderRadius = `${borderRadius}px`;
+}
+
+function applyGameSettings() {
+  const scale = gameSettings.mapSize / 100;
+  const newWidth = BASE_WIDTH * scale;
+  const newHeight = BASE_HEIGHT * scale;
+  
+  gameContainer.style.width = newWidth + 'px';
+  gameContainer.style.height = newHeight + 'px';
+  
+  timer = gameSettings.gameTimer;
+  timerDisplay.textContent = timer;
+  
+  scaleUI();
+}
+
+function restartGame() {
+  gameOverHUD.style.display = 'none';
+  pauseScreen.style.display = 'none';
+  settingsScreen.style.display = 'none';
+  tutorialScreen.style.display = 'none';
+  customizeScreen.style.display = 'none';
+  puffCustomizeScreen.style.display = 'none';
+  gameSettingsScreen.style.display = 'none';
+  soundSettingsScreen.style.display = 'none';
+  backToMenuBtn.style.display = 'block';
+  gameStarted = true;
+  gamePaused = false;
+  resetGame();
+  applyGameSettings();
+  startSpawning();
+  startTimer();
+  document.body.style.cursor = 'none';
+  character.style.display = 'block';
+  timerClicked = false;
+  secretClickIndicator.textContent = '';
+  scoreDisplay.style.display = 'block';
+  timerDisplay.style.display = 'block';
+  highscoreDisplay.style.display = 'block';
+}
+
+function resetGame() {
+  cheesePuffs.forEach(p => p.remove());
+  cheesePuffs = [];
+  
+  score = 0;
+  scoreDisplay.textContent = `Score: ${score}`;
+  highscoreMessage.textContent = '';
+  highscoreMessage.className = '';
+  
+  clearInterval(spawnInterval);
+  clearInterval(timerInterval);
+}
+
+function togglePause() {
+  if (gamePaused) {
+    resumeGame();
+  } else {
+    pauseGame();
+  }
+}
+
+function pauseGame() {
+  if (!gamePaused && gameStarted) {
+    gamePaused = true;
+    clearInterval(spawnInterval);
+    clearInterval(timerInterval);
+    pauseScreen.style.display = 'block';
+    document.body.style.cursor = 'default';
+  }
+}
+
+function resumeGame() {
+  if (gamePaused) {
+    gamePaused = false;
+    pauseScreen.style.display = 'none';
+    startSpawning();
+    startTimer();
+    document.body.style.cursor = 'none';
+  }
+}
+
+document.addEventListener('mousemove', (e) => {
+  if (!gameStarted || gamePaused) return;
+  
+  const gameRect = gameContainer.getBoundingClientRect();
+  
+  const mouseX = e.clientX - gameRect.left;
+  const mouseY = e.clientY - gameRect.top;
+  
+  character.style.left = `${mouseX}px`;
+  character.style.top = `${mouseY}px`;
+});
+
+function isPositionInUI(x, y, size) {
+  for (const area in UI_BOUNDARIES) {
+    const boundary = UI_BOUNDARIES[area];
+    if (x + size > boundary.x1 && x < boundary.x2 && 
+        y + size > boundary.y1 && y < boundary.y2) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function spawnCheesePuff() {
+  if (gamePaused) return;
+  
+  const cheesePuff = document.createElement('div');
+  cheesePuff.classList.add('cheese-puff');
+  
+  const puffSize = gameSettings.puffSize;
+  cheesePuff.style.width = `${puffSize}px`;
+  cheesePuff.style.height = `${puffSize}px`;
+  
+  if (customPuffImage) {
+    cheesePuff.style.backgroundImage = `url('${customPuffImage}')`;
+  }
+  
+  const borderMargin = 30;
+  
+  const maxX = gameContainer.clientWidth - puffSize - borderMargin;
+  const maxY = gameContainer.clientHeight - puffSize - borderMargin;
+  const minX = borderMargin;
+  const minY = borderMargin;
+  
+  if (maxX <= minX || maxY <= minY) return;
+  
+  let randomX, randomY;
+  let attempts = 0;
+  const maxAttempts = 20;
+  
+  do {
+    randomX = Math.floor(Math.random() * (maxX - minX)) + minX;
+    randomY = Math.floor(Math.random() * (maxY - minY)) + minY;
+    attempts++;
+  } while (isPositionInUI(randomX, randomY, puffSize) && attempts < maxAttempts);
+  
+  cheesePuff.style.left = `${randomX}px`;
+  cheesePuff.style.top = `${randomY}px`;
+  gameContainer.appendChild(cheesePuff);
+  cheesePuffs.push(cheesePuff);
+  let collected = false;
+  const timeout = setTimeout(() => {
+    if (!collected) {
+      cheesePuff.remove();
+      cheesePuffs.splice(cheesePuffs.indexOf(cheesePuff), 1);
+      decrementScore();
+    }
+  }, gameSettings.despawnTimer);
+  
+  cheesePuff.addEventListener('mousedown', (e) => {
+    e.preventDefault();
+    if (!collected && !gamePaused) {
+      collected = true;
+      clearTimeout(timeout);
+      cheesepuffSound.play();
+      
+      const puffRect = cheesePuff.getBoundingClientRect();
+      const gameRect = gameContainer.getBoundingClientRect();
+      
+      const puffCenterX = puffRect.left - gameRect.left + puffRect.width / 2;
+      const puffCenterY = puffRect.top - gameRect.top + puffRect.height / 2;
+      
+      createParticles(puffCenterX, puffCenterY);
+      cheesePuff.remove();
+      cheesePuffs.splice(cheesePuffs.indexOf(cheesePuff), 1);
+      incrementScore();
+    }
+  });
+}
+
+function incrementScore() {
+  score += 2;
+  scoreDisplay.textContent = `Score: ${score}`;
+  animateScore();
+  
+  totalCheesePuffsCollected++;
+  localStorage.setItem('cheesepuff_total_collected', totalCheesePuffsCollected.toString());
+}
+
+function decrementScore() {
+  score -= 1;
+  scoreDisplay.textContent = `Score: ${score}`;
+  animateScore();
+}
+
+function animateScore() {
+  scoreDisplay.style.animation = 'scoreAnimation 0.5s ease-in-out';
+  setTimeout(() => { scoreDisplay.style.animation = ''; }, 500);
+}
+
+function createParticles(x, y) {
+  for (let i=0; i<8; i++) {
+    const particle = document.createElement('div');
+    particle.classList.add('particle');
+    
+    particle.style.left = `${x}px`;
+    particle.style.top = `${y}px`;
+    
+    const dx = (Math.random()-0.5)*100 + 'px';
+    const dy = (Math.random()-0.5)*100 + 'px';
+    particle.style.setProperty('--dx', dx);
+    particle.style.setProperty('--dy', dy);
+    
+    gameContainer.appendChild(particle);
+    setTimeout(() => particle.remove(), 500);
+  }
+}
+
+function startSpawning() { 
+  spawnInterval = setInterval(spawnCheesePuff, gameSettings.spawnSpeed); 
+}
+
+function startTimer() {
+  timerInterval = setInterval(() => {
+    timer--;
+    timerDisplay.textContent = timer;
+    if (timer <= 0) {
+      clearInterval(timerInterval);
+      clearInterval(spawnInterval);
+      endGame();
+    }
+  }, 1000);
+}
+
+function endGame() {
+  cheesePuffs.forEach(p => p.remove());
+  finalScore.textContent = `Score: ${score}`;
+  
+  saveScoreHistory(score);
+  
+  const isNewHighscore = saveHighscore();
+  if (isNewHighscore) {
+    highscoreMessage.textContent = 'NEW HIGHSCORE!';
+    highscoreMessage.className = 'new-highscore';
+  } else {
+    highscoreMessage.textContent = `Highscore: ${highscore}`;
+  }
+  
+  gameOverHUD.style.display = 'block';
+  gameStarted = false;
+  document.body.style.cursor = 'default';
+  character.style.display = 'none';
+  timerClicked = false;
+  secretClickIndicator.textContent = '';
+}
+
+sensitivitySlider.addEventListener('input', function() {
+  sensitivityValue.textContent = `Current: ${this.value}x`;
+});
+
+updateCustomizeButton();
+updateSoundButton();
+updateGameSettingsUI();
+loadScoreHistory();
+setupKeybindListeners();
+updateTutorialKeybinds();
+updateControlsDisplay();
+</script>
+</body>
+</html>
